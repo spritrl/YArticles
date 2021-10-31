@@ -23,10 +23,24 @@ session_start();
 
 // On recupere le path
 $path = $_SERVER['REQUEST_URI'];
+$data;
 
 switch($path){
     case '/articles':
-        include 'controlers/article/c_articles.php';
-        get_articles('127.0.0.1:8000/articles');
+        include 'controlers/article/callAPI.php';
+        $data = callAPI('GET', '127.0.0.1:8000/articles', false);
         break;
 }
+$json = json_decode($data, true);
+$articles = $json['articles'];
+print_r($json);
+foreach ($articles as $article) {
+    foreach ($article as $key => $value) {
+            ?>
+            <ul> 
+                <li><?php echo$value; ?></span></li>
+            </ul>
+        <?php
+        }
+}
+?>
