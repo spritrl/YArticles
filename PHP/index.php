@@ -35,12 +35,17 @@ $json = json_decode($data, true);
 $articles = $json['articles'];
 print_r($json);
 foreach ($articles as $article) {
+    echo "<h2>The articles :";
+    echo $article['article_id'];
+    echo "</h2>";
+    echo "<ul>";
     foreach ($article as $key => $value) {
             ?>
-            <ul> 
-                <li><?php echo$value; ?></span></li>
-            </ul>
+            
+            <li><?php echo "{$key} : {$value}"; ?></span></li>
+        
         <?php
-        }
+    }
+    echo "</ul>";
 }
 ?>
