@@ -38,10 +38,11 @@ session_start();
 
 // On recupere le path
 $path = $_SERVER['REQUEST_URI'];
+$parsed_path = parse_url($path);
+print_r($parsed_path);
 
-
-switch($path){
-    case '/articles':
+switch($parsed_path["path"]){
+    case '/article':
         include './views/articles.php';
         break;
 }
