@@ -1,7 +1,13 @@
 <?php 
 include 'controlers/article/callAPI.php';
 $parsed_path = parse_url($_SERVER['REQUEST_URI']);
-$data = callAPI('GET', '127.0.0.1:8000/articles?'. $parsed_path['query'], false);
+if ($parsed_path['query'] != null) {
+    $query = $parsed_path['query'];
+}
+else{
+    $query = '';
+}
+$data = callAPI('GET', '127.0.0.1:8000/articles?'. $query, false);
 $json = json_decode($data, true);
 $articles = $json['articles'];
 $links = $json['_links'];
