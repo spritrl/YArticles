@@ -1,0 +1,22 @@
+a{
+    text-decoration: none;
+    color: black;
+}
+a:hover{
+    color: green;
+}
+
+.articles{
+    display: flex;
+    flex-direction: column;
+    margin: 10px 30%;
+    width: 40%;
+    justify-content: center;
+}
+
+.links{
+    display: flex;
+    justify-content: space-between;
+    margin: auto;
+    width: 30%;
+}
