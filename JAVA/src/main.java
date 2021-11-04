@@ -3,25 +3,54 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class main {
 
 
 	private static Scanner reader;
+	private static Integer v = 0;
 
 	public static void main(String[] args) throws IOException {
 		int n = 0;
 
 		while(n != 1 || n != 2) {
-			n = getMethodeToUse();
-			switch(n){
+			try {
+				n = getMethodeToUse();
+			} catch (Exception e) {
+				System.out.println("Error : " + e);
+		    }
+			switch(n) {
 				case 1 :
 					sendAutomaticRequests();
 					break;
 				case 2 :
-					System.out.println("case 2");
+					while(v != 1 && v != 2) {
+						try {
+							v = createArticleOrComment();
+							System.out.println("=======================");
+							switch(v) {
+								case 1 :
+									// Create an Article
+									createArticle();
+									break;
+								case 2 :
+									// Create a Comment
+									createComment();
+									break;
+								default:
+									System.out.println("This choice does not exist.");
+									break;
+							}
+						} catch (Exception e) {
+							System.out.println("Error : " + e);
+					    }
+					}
+					v = 0;
 					break;
 				default:
 					System.out.println("This choice does not exist.");
@@ -57,7 +86,7 @@ public class main {
 	public static void sendAutomaticRequests() throws IOException {
 
 		// Create a Comment on /articles/2
-		URL url = new URL ("http://localhost:8000/articles/2/comments");
+		URL url = new URL ("http://localhost:8000/articles/2/comment");
 		String jsonComment = "{\n" +
 				"    \"title\": \"POST by Java\",\n" +
 				"    \"content\": \"Content\",\n" +
@@ -70,7 +99,7 @@ public class main {
 	    }
 
 		// Create an Article
-		url = new URL ("http://localhost:8000/article");
+		url = new URL ("http://localhost:8000/articles");
 		String jsonArticles = "{\n" +
 				"    \"title\": \"Article by Java\",\n" +
 				"    \"slug\": \"Slug by Java\",\n" +
@@ -80,6 +109,91 @@ public class main {
 				"}";
 		try {
 			sendRequest(jsonArticles, url);
+		} catch (Exception e) {
+			System.out.println("Error : " + e);
+	    }
+	}
+
+	/**
+	 *
+	 * This function will which New Request the user wants to create.
+	 *
+	 */
+	public static int createArticleOrComment() {
+		int n;
+		reader = new Scanner(System.in);
+		System.out.println("=======================");
+		System.out.println("Do you want to create an Article or a Comment: "
+							+ "\n"
+							+ "\n1 - Create an Article"
+							+ "\n2 - Create a Comment"
+							+ "\n=======================");
+		System.out.println("Enter a number :");
+		n = reader.nextInt();
+		return n;
+	}
+
+	/**
+	 *
+	 * This function will create an Article with the user responses.
+	 * 
+	 */
+	public static void createArticle() throws MalformedURLException {
+
+		URL url = new URL ("http://localhost:8000/articles");
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		LocalDateTime now = LocalDateTime.now();
+
+		String date = dtf.format(now);
+		String title;
+		String slug;
+		String content;
+		String author;
+
+		reader = new Scanner(System.in);
+		System.out.println("Enter a Title :");
+		title = reader.nextLine();
+		System.out.println("Enter a Slug :");
+		slug = reader.nextLine();
+		System.out.println("Enter a Content:");
+		content = reader.nextLine();
+		System.out.println("Enter an Author:");
+		author = reader.nextLine();
+
+		Article article = new Article(title, slug, content, author, date);
+
+		try {
+			sendRequest(article.generateJson(), url);
+		} catch (Exception e) {
+			System.out.println("Error : " + e);
+	    }
+	}
+
+	/**
+	 *
+	 * This function will create a Comment with the user responses.
+	 * 
+	 */
+	public static void createComment() throws MalformedURLException {
+
+		String title;
+		String content;
+		int article_id = 2;
+
+		reader = new Scanner(System.in);
+		System.out.println("Enter a Title :");
+		title = reader.nextLine();
+		System.out.println("Enter a Content :");
+		content = reader.nextLine();
+		System.out.println("Enter an Article_Id :");
+		article_id = reader.nextInt();
+
+		Comment comment = new Comment(title, content, article_id);
+		
+		URL url = new URL ("http://localhost:8000/articles/" + article_id +"/comment");
+
+		try {
+			sendRequest(comment.generateJson(), url);
 		} catch (Exception e) {
 			System.out.println("Error : " + e);
 	    }
