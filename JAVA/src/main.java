@@ -4,10 +4,57 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Scanner;
 
 public class main {
 
+
+	private static Scanner reader;
+
 	public static void main(String[] args) throws IOException {
+		int n = 0;
+
+		while(n != 1 || n != 2) {
+			n = getMethodeToUse();
+			switch(n){
+				case 1 :
+					sendAutomaticRequests();
+					break;
+				case 2 :
+					System.out.println("case 2");
+					break;
+				default:
+					System.out.println("This choice does not exist.");
+					break;
+			}
+		}
+	}
+
+	/**
+	 *
+	 * This function will print and get the request methode.
+	 *
+	 */
+	public static int getMethodeToUse() {
+		int n;
+		reader = new Scanner(System.in);
+		System.out.println("=======================");
+		System.out.println("Menu : "
+							+ "\n"
+							+ "\n1 - To run automatic requests"
+							+ "\n2 - To run manual requests"
+							+ "\n=======================");
+		System.out.println("Enter a number :");
+		n = reader.nextInt();
+		return n;
+	}
+
+	/**
+	 *
+	 * This function will send the requests already defined by the code.
+	 *
+	 */
+	public static void sendAutomaticRequests() throws IOException {
 
 		// Create a Comment on /articles/2
 		URL url = new URL ("http://localhost:8000/articles/2/comments");
@@ -16,7 +63,11 @@ public class main {
 				"    \"content\": \"Content\",\n" +
 				"    \"article_id\": 2\n" +
 				"}";
-		sendRequest(jsonComment, url);
+		try {
+			sendRequest(jsonComment, url);
+		} catch (Exception e) {
+			System.out.println("Error : " + e);
+	    }
 
 		// Create an Article
 		url = new URL ("http://localhost:8000/article");
@@ -27,7 +78,11 @@ public class main {
 				"    \"author\": \"Author is Java\",\n" +
 				"    \"date\": \"2021-01-01 19:22:00\"\n" +
 				"}";
-		sendRequest(jsonArticles, url);
+		try {
+			sendRequest(jsonArticles, url);
+		} catch (Exception e) {
+			System.out.println("Error : " + e);
+	    }
 	}
 
 	/**
