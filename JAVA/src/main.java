@@ -8,17 +8,35 @@ import java.net.URL;
 public class main {
 
 	public static void main(String[] args) throws IOException {
-		URL url = new URL ("http://localhost:8000/articles/2/comments");
-		String json = "{\n" + 
-				"    \"title\": \"POST by Java\",\n" + 
-				"    \"content\": \"Content\",\n" + 
-				"    \"article_id\": 2\n" + 
-				"}";
-		sendRequest(json, url);
 
+		// Create a Comment on /articles/2
+		URL url = new URL ("http://localhost:8000/articles/2/comments");
+		String jsonComment = "{\n" +
+				"    \"title\": \"POST by Java\",\n" +
+				"    \"content\": \"Content\",\n" +
+				"    \"article_id\": 2\n" +
+				"}";
+		sendRequest(jsonComment, url);
+
+		// Create an Article
+		url = new URL ("http://localhost:8000/article");
+		String jsonArticles = "{\n" +
+				"    \"title\": \"Article by Java\",\n" +
+				"    \"slug\": \"Slug by Java\",\n" +
+				"    \"content\": \"Content by Java\",\n" +
+				"    \"author\": \"Author is Java\",\n" +
+				"    \"date\": \"2021-01-01 19:22:00\"\n" +
+				"}";
+		sendRequest(jsonArticles, url);
 	}
-	
-	public static void sendRequest(String JsonToSend, URL url) throws IOException {
+
+	/**
+	 * Create a POST request
+	 *
+	 * @param jsonToSend is the Json with all parameters filled in
+	 * @param url is the url expected by the API for the request
+	 */
+	public static void sendRequest(String jsonToSend, URL url) throws IOException {
 	    System.out.println("=======================");
 		HttpURLConnection con = (HttpURLConnection)url.openConnection();
 		con.setRequestMethod("POST");
@@ -26,7 +44,7 @@ public class main {
 		con.setRequestProperty("Accept", "application/json");
 		con.setDoOutput(true);
 		try(OutputStream os = con.getOutputStream()) {
-		    byte[] input = JsonToSend.getBytes("utf-8");
+		    byte[] input = jsonToSend.getBytes("utf-8");
 		    os.write(input, 0, input.length);
 		    System.out.println("API - Json sent to : " + url);
 		}
