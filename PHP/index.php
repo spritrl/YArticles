@@ -29,4 +29,17 @@ switch($path){
         include 'controlers/article/c_articles.php';
         get_articles('127.0.0.1:8000/articles');
         break;
+    case '/articles'.$id:
+        if (isset($_GET['idArticle'])) {
+            //  affichage de l'article recherché
+            get_articles('127.0.0.1:8000/articles/' . $_GET['idArticle']);
+        } else {
+            echo "<form method='get' action=''>
+                    <input type='number' name='idArticle' min='1' placeholder= 'Search article' required><br>
+                  <input type='submit' value='Submit'>
+                </fieldset>
+              </form> ";
+    
+            get_articles('127.0.0.1:8000/articles');
+        }
 }
